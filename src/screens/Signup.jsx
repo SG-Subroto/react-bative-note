@@ -19,10 +19,13 @@ import {
     query,
     where,
 } from "firebase/firestore"
+import { showMessage } from 'react-native-flash-message';
+import { ActivityIndicator } from 'react-native';
 
 export default function Signup() {
     const { navigate } = useNavigation();
 
+    const [loading, setLoading] = useState(false);
     const [gender, setGender] = useState(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -30,6 +33,7 @@ export default function Signup() {
     const [age, setAge] = useState("");
 
     const handleSignup = async () => {
+        setLoading(true)
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password)
 
@@ -45,7 +49,13 @@ export default function Signup() {
 
             await addDoc(dbRef, data)
         } catch (error) {
+            showMessage({
+                message: "ERROR!",
+                type: "danger",
+            })
             console.log("error =>", error)
+        } finally {
+            setLoading(false)
         }
 
 
@@ -59,14 +69,14 @@ export default function Signup() {
 
             <View style={{ paddingHorizontal: 16, paddingVertical: 25 }}>
 
-                <Input placeholder="Email" onChangeText={(text) => setEmail(text)} />
+                <Input placeholder="Email" autoCapitalize={"none"} onChangeText={(text) => setEmail(text)} />
                 <Input placeholder="Password" secureTextEntry={true} onChangeText={(text) => setPassword(text)} />
-                <Input placeholder="Full Name" onChangeText={(text) => setFullName(text)} />
+                <Input placeholder="Full Name" autoCapitalize={"words"} onChangeText={(text) => setFullName(text)} />
                 <Input placeholder="Age" onChangeText={(text) => setAge(text)} />
 
                 <View style={{ marginTop: 20 }}>
-                    <RadioButton label={"Male"} gender={gender} setGender={setGender} />
-                    <RadioButton label={"Female"} gender={gender} setGender={setGender} />
+                    <RadioButton label={"Male"} value={gender} setValue={setGender} />
+                    <RadioButton label={"Female"} value={gender} setValue={setGender} />
                 </View>
             </View>
 
@@ -79,11 +89,14 @@ export default function Signup() {
                     paddingBottom: 10
                 }}
             >
-                <Button
-                    onPress={handleSignup}
-                    title="Registration"
-                    customStyle={{ alignSelf: "center", marginBottom: 60 }}
-                />
+                {loading ?
+                    <ActivityIndicator size="large" />
+                    :
+                    <Button
+                        onPress={handleSignup}
+                        title="Registration"
+                        customStyle={{ alignSelf: "center", marginBottom: 60 }}
+                    />}
                 <Pressable
                     onPress={() => navigate('Signin')}
                 >

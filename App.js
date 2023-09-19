@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -12,15 +12,16 @@ import Create from './src/screens/Create';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import FlashMessage from 'react-native-flash-message';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCGLKGr-9pWhx_x1AFqKsMx-NDDqetVbjE",
-  authDomain: "native-note-8b7da.firebaseapp.com",
-  projectId: "native-note-8b7da",
-  storageBucket: "native-note-8b7da.appspot.com",
-  messagingSenderId: "1072329169414",
-  appId: "1:1072329169414:web:85080f114ed6cb3f598187"
+  apiKey: "AIzaSyDy9XZPyWhfQyZxFvbcdiDAPF2iyYu5ZU8",
+  authDomain: "react-native-note-ee407.firebaseapp.com",
+  projectId: "react-native-note-ee407",
+  storageBucket: "react-native-note-ee407.appspot.com",
+  messagingSenderId: "1079064857674",
+  appId: "1:1079064857674:web:2236fd0c69466913bdeab3"
 };
 
 // Initialize Firebase
@@ -45,14 +46,45 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
+  // useEffect(() => {
+  //   signOut(auth)
+  // }, [])
+
+  useEffect(() => {
+    const authSubscription = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user)
+        setLoading(false)
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
+    })
+    return authSubscription;
+  }, [])
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color="blue" size="large" />
+      </View>
+    )
+  }
+
   return (
     <NavigationContainer theme={AppTheme}>
       <Stack.Navigator>
         {user ? (
           <>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Edit" component={Edit} />
-            <Stack.Screen name="Create" component={Create} />
+            <Stack.Screen name="Home" options={{ headerShown: false }}>
+              {(props) => <Home {...props} user={user} />}
+            </Stack.Screen>
+            <Stack.Screen name="Edit">
+              {(props) => <Edit {...props} user={user} />}
+            </Stack.Screen>
+            <Stack.Screen name="Create">
+              {(props) => <Create {...props} user={user} />}
+            </Stack.Screen>
           </>
         ) : (
           <>
@@ -65,6 +97,9 @@ export default function App() {
           </>
         )}
       </Stack.Navigator>
+      <View style={{ marginTop: 20 }}>
+        <FlashMessage position="top" />
+      </View>
     </NavigationContainer>
   );
 }

@@ -1,17 +1,17 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
 
-export default function RadioButton({ label, gender, setGender }) {
+export default function RadioButton({ label, value, setValue }) {
     return (
         <Pressable
-            onPress={() => setGender(label)}
+            onPress={() => setValue(label)}
             style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, width: 100 }}>
             <View
                 style={
                     [styles.outerCircle, { flexDirection: "row", alignItems: "center", justifyContent: "center", marginRight: 5 }]
                 }
             >
-                {gender === label && <View style={[styles.innerCircle]}></View>}
+                {value === label && <View style={[styles.innerCircle]}></View>}
             </View>
             <Text>{label}</Text>
         </Pressable>
