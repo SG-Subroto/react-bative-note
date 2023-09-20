@@ -5,7 +5,7 @@ import Input from '../components/Input';
 import RadioButton from '../components/RadioButton';
 import Button from '../components/Button';
 import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../App';
+import { db } from '../../firebase'
 import { showMessage } from 'react-native-flash-message';
 
 const noteColorOptions = ['red', 'blue', 'green'];

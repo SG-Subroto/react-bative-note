@@ -6,7 +6,8 @@ import GlobalStyles from '../../GlobalStyles';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../App';
+import { signIn } from '../hooks/auth';
+// import { auth } from '../../App';
 
 export default function Signin() {
     const { navigate } = useNavigation();
@@ -14,9 +15,19 @@ export default function Signin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const login = () => {
+    const login = async () => {
         setLoading(true)
-        signInWithEmailAndPassword(auth, email, password).then(() => setLoading(false))
+        try {
+            const result = await signIn(email, password); // Use the signIn function from auth.js
+            // Redirect to the Home screen after successful signin
+            setLoading(false)
+            console.log('result =>', result);
+        } catch (error) {
+            // Handle signin errors (display an error message, etc.)
+            console.error('Signin Error:', error.message);
+        }
+        // signInWithEmailAndPassword(auth, email, password).then(() => setLoading(false))
+        // navigate('Create');
     }
 
     return (

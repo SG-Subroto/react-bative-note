@@ -5,7 +5,7 @@ import GlobalStyles from '../../GlobalStyles'
 import { Pressable } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { collection, query, where } from 'firebase/firestore'
-import { db } from '../../App'
+import { db } from '../../firebase'
 
 export default function Home({ navigation, route, user }) {
     const [notes, setNotes] = useState([])

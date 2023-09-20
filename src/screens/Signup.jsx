@@ -34,29 +34,29 @@ export default function Signup() {
 
     const handleSignup = async () => {
         setLoading(true)
-        try {
-            const result = await createUserWithEmailAndPassword(auth, email, password)
+        // try {
+        //     const result = await createUserWithEmailAndPassword(auth, email, password)
 
-            const dbRef = collection(db, "users");
-            const data = {
-                name: fullName,
-                email: email,
-                age: age,
-                gender: gender,
-                uid: result.user.uid,
-            }
-            console.log('data =>', data);
+        //     const dbRef = collection(db, "users");
+        //     const data = {
+        //         name: fullName,
+        //         email: email,
+        //         age: age,
+        //         gender: gender,
+        //         uid: result.user.uid,
+        //     }
+        //     console.log('data =>', data);
 
-            await addDoc(dbRef, data)
-        } catch (error) {
-            showMessage({
-                message: "ERROR!",
-                type: "danger",
-            })
-            console.log("error =>", error)
-        } finally {
-            setLoading(false)
-        }
+        //     await addDoc(dbRef, data)
+        // } catch (error) {
+        //     showMessage({
+        //         message: "ERROR!",
+        //         type: "danger",
+        //     })
+        //     console.log("error =>", error)
+        // } finally {
+        //     setLoading(false)
+        // }
 
 
     }

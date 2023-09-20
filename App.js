@@ -14,23 +14,28 @@ import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import FlashMessage from 'react-native-flash-message';
+// import AuthProvider from './src/contexts/AuthProvider';
+import useAuth from './src/hooks/useAuth';
+import { AuthProvider } from './src/contexts/AuthContext';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDy9XZPyWhfQyZxFvbcdiDAPF2iyYu5ZU8",
-  authDomain: "react-native-note-ee407.firebaseapp.com",
-  projectId: "react-native-note-ee407",
-  storageBucket: "react-native-note-ee407.appspot.com",
-  messagingSenderId: "1079064857674",
-  appId: "1:1079064857674:web:2236fd0c69466913bdeab3"
-};
+import { auth } from './firebase'
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig, {
-  experimentalForceLongPolling: true, // Enable long polling
-  merge: true
-});
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDy9XZPyWhfQyZxFvbcdiDAPF2iyYu5ZU8",
+//   authDomain: "react-native-note-ee407.firebaseapp.com",
+//   projectId: "react-native-note-ee407",
+//   storageBucket: "react-native-note-ee407.appspot.com",
+//   messagingSenderId: "1079064857674",
+//   appId: "1:1079064857674:web:2236fd0c69466913bdeab3"
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig, {
+//   experimentalForceLongPolling: true, // Enable long polling
+//   merge: true
+// });
+// export const auth = getAuth(app);
+// export const db = getFirestore(app);
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +50,9 @@ const AppTheme = {
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  // const user = useAuth();
+
+
 
   // useEffect(() => {
   //   signOut(auth)
@@ -72,35 +80,38 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer theme={AppTheme}>
-      <Stack.Navigator>
-        {user ? (
-          <>
-            <Stack.Screen name="Home" options={{ headerShown: false }}>
-              {(props) => <Home {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="Edit">
-              {(props) => <Edit {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="Create">
-              {(props) => <Create {...props} user={user} />}
-            </Stack.Screen>
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="Signin"
-              component={Signin}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="Signup" component={Signup} />
-          </>
-        )}
-      </Stack.Navigator>
-      <View style={{ marginTop: 20 }}>
+    <AuthProvider>
+      <NavigationContainer theme={AppTheme}>
+        <Stack.Navigator>
+          {user ? (
+            <>
+              <Stack.Screen name="Home" options={{ headerShown: false }}>
+                {(props) => <Home {...props} user={user} />}
+              </Stack.Screen>
+              {/* <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} /> */}
+              <Stack.Screen name="Edit">
+                {(props) => <Edit {...props} user={user} />}
+              </Stack.Screen>
+              <Stack.Screen name="Create">
+                {(props) => <Create {...props} user={user} />}
+              </Stack.Screen>
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Signin"
+                component={Signin}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Signup" component={Signup} />
+            </>
+          )}
+        </Stack.Navigator>
+        {/* <View style={{ marginTop: 20 }}> */}
         <FlashMessage position="top" />
-      </View>
-    </NavigationContainer>
+        {/* </View> */}
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
